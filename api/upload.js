@@ -19,14 +19,7 @@ export default async function handler(request, response) {
     return response.status(400).json({ error: 'Filename query parameter is required' });
   }
 
-  // Optional: Check password
-  const adminPassword = process.env.ADMIN_PASSWORD || '';
-  if (adminPassword) {
-    const providedPassword = request.headers['x-admin-password'];
-    if (providedPassword !== adminPassword) {
-      return response.status(401).json({ error: 'Unauthorized' });
-    }
-  }
+
 
   try {
     // Vercel request is a readable stream, which can be passed directly to @vercel/blob's put function.

@@ -373,7 +373,6 @@
     <h1>kobo-mimi</h1>
     <div class="header-actions">
       <button class="btn kobo-toggle" onclick="toggleKoboMode()">Mode Liseuse</button>
-      <button class="btn" onclick="openPasswordModal()">⚙️ Code d'accès</button>
     </div>
   </header>
 
@@ -389,18 +388,7 @@
     </div>
   </main>
 
-  <!-- Modal Code Accès -->
-  <div class="modal" id="passwordModal" onclick="closePasswordModal(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-      <div class="modal-header">Configuration d'accès</div>
-      <p style="font-size: 0.9rem; color: var(--text-muted);">Saisissez le code d'administration requis pour téléverser et supprimer des livres.</p>
-      <input type="password" id="adminPasswordInput" placeholder="Entrez le code d'accès">
-      <div class="modal-footer">
-        <button class="btn" onclick="closePasswordModal()">Annuler</button>
-        <button class="btn btn-primary" onclick="savePassword()">Enregistrer</button>
-      </div>
-    </div>
-  </div>
+
 
   <div class="toast" id="toast"></div>
 
@@ -454,26 +442,7 @@
       document.body.classList.add('kobo-mode');
     }
 
-    function openPasswordModal() {
-      document.getElementById('passwordModal').style.display = 'flex';
-      document.getElementById('adminPasswordInput').value = localStorage.getItem('kobo_admin_password') || '';
-    }
 
-    function closePasswordModal() {
-      document.getElementById('passwordModal').style.display = 'none';
-    }
-
-    function savePassword() {
-      const password = document.getElementById('adminPasswordInput').value;
-      localStorage.setItem('kobo_admin_password', password);
-      closePasswordModal();
-      showToast('Code d\'accès enregistré localement');
-      loadBooks();
-    }
-
-    function getPassword() {
-      return localStorage.getItem('kobo_admin_password') || '';
-    }
 
     async function loadBooks() {
       booksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Chargement des livres...</div>';
@@ -547,20 +516,10 @@
       showToast(`Téléchargement de ${file.name} en cours...`);
 
       try {
-        const password = getPassword();
         const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
           method: 'POST',
-          headers: {
-            'x-admin-password': password
-          },
           body: file
         });
-
-        if (response.status === 401) {
-          showToast('Code d\'accès incorrect ou non configuré.', true);
-          openPasswordModal();
-          return;
-        }
 
         if (!response.ok) {
           const errData = await response.json();
@@ -578,19 +537,9 @@
       if (!confirm('Voulez-vous vraiment supprimer cet e-book ?')) return;
 
       try {
-        const password = getPassword();
         const response = await fetch(`/api/delete?url=${encodeURIComponent(url)}`, {
-          method: 'POST',
-          headers: {
-            'x-admin-password': password
-          }
+          method: 'POST'
         });
-
-        if (response.status === 401) {
-          showToast('Code d\'accès incorrect ou non configuré.', true);
-          openPasswordModal();
-          return;
-        }
 
         if (!response.ok) {
           const errData = await response.json();

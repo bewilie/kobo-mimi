@@ -12,14 +12,7 @@ export default async function handler(request, response) {
     return response.status(400).json({ error: 'Blob URL is required' });
   }
 
-  // Check password
-  const adminPassword = process.env.ADMIN_PASSWORD || '';
-  if (adminPassword) {
-    const providedPassword = request.headers['x-admin-password'];
-    if (providedPassword !== adminPassword) {
-      return response.status(401).json({ error: 'Unauthorized' });
-    }
-  }
+
 
   try {
     await del(blobUrl);
