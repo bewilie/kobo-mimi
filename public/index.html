@@ -24,54 +24,6 @@
       --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* High contrast / E-Ink / Kobo mode override */
-    body.kobo-mode {
-      --bg-color: #ffffff;
-      --card-bg: #ffffff;
-      --card-border: #000000;
-      --text-main: #000000;
-      --text-muted: #555555;
-      --accent: #000000;
-      --accent-hover: #000000;
-      --danger: #000000;
-      --danger-hover: #000000;
-      font-size: 18px;
-    }
-
-    body.kobo-mode * {
-      box-shadow: none !important;
-      text-shadow: none !important;
-      transition: none !important;
-      animation: none !important;
-    }
-
-    body.kobo-mode .card {
-      border: 2px solid #000000;
-      border-radius: 0;
-    }
-
-    body.kobo-mode .btn {
-      border: 2px solid #000000;
-      border-radius: 0;
-      background: #ffffff;
-      color: #000000;
-    }
-
-    body.kobo-mode .btn-danger {
-      border: 1px dashed #000000;
-      background: #ffffff;
-      color: #000000;
-    }
-
-    body.kobo-mode .upload-zone {
-      display: none; /* Hide upload on Kobo by default to keep screen clean */
-    }
-
-    body.kobo-mode .kobo-toggle {
-      background: #000000 !important;
-      color: #ffffff !important;
-    }
-
     /* Standard modern web aesthetics */
     * {
       box-sizing: border-box;
@@ -168,6 +120,7 @@
 
     /* Upload zone styling */
     .upload-zone {
+      display: none;
       border: 2px dashed var(--card-border);
       border-radius: 12px;
       padding: 2.5rem;
@@ -307,11 +260,7 @@
       gap: 1.25rem;
     }
 
-    body.kobo-mode .modal-content {
-      background: #ffffff;
-      border: 3px solid #000000;
-      border-radius: 0;
-    }
+
 
     .modal-header {
       font-family: var(--font-serif);
@@ -328,12 +277,7 @@
       font-family: var(--font-sans);
     }
 
-    body.kobo-mode .modal input[type="password"] {
-      background: #ffffff;
-      border: 2px solid #000000;
-      color: #000000;
-      border-radius: 0;
-    }
+
 
     .modal-footer {
       display: flex;
@@ -372,7 +316,7 @@
   <header>
     <h1>kobo-mimi</h1>
     <div class="header-actions">
-      <button class="btn kobo-toggle" onclick="toggleKoboMode()">Mode Liseuse</button>
+      <button class="btn btn-primary" onclick="toggleUploadZone()">➕ Ajouter un livre</button>
     </div>
   </header>
 
@@ -431,15 +375,13 @@
       }, 3000);
     }
 
-    function toggleKoboMode() {
-      document.body.classList.toggle('kobo-mode');
-      const isKobo = document.body.classList.contains('kobo-mode');
-      localStorage.setItem('kobo_mode', isKobo ? 'true' : 'false');
-    }
-
-    // Auto-detect Kobo User Agent
-    if (navigator.userAgent.toLowerCase().includes('kobo') || localStorage.getItem('kobo_mode') === 'true') {
-      document.body.classList.add('kobo-mode');
+    function toggleUploadZone() {
+      const zone = document.getElementById('dropzone');
+      if (zone.style.display === 'none' || !zone.style.display) {
+        zone.style.display = 'block';
+      } else {
+        zone.style.display = 'none';
+      }
     }
 
 
