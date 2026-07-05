@@ -1,0 +1,11 @@
+{
+  "name": "kobo-mimi",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Deploy to Vercel to test with active Vercel Blob'"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.23.4"
+  }
+}
