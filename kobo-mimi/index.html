@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kobo Mimi - Bibliothèque</title>
+  <meta name="description" content="Votre bibliothèque d'e-books personnelle pour liseuse Kobo. Téléchargez et gérez vos EPUBs facilement.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --font-serif: 'Instrument Serif', serif;
+      --font-sans: 'Inter', sans-serif;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* High contrast / E-Ink / Kobo mode override */
+    body.kobo-mode {
+      --bg-color: #ffffff;
+      --card-bg: #ffffff;
+      --card-border: #000000;
+      --text-main: #000000;
+      --text-muted: #555555;
+      --accent: #000000;
+      --accent-hover: #000000;
+      --danger: #000000;
+      --danger-hover: #000000;
+      font-size: 18px;
+    }
+
+    body.kobo-mode * {
+      box-shadow: none !important;
+      text-shadow: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+
+    body.kobo-mode .card {
+      border: 2px solid #000000;
+      border-radius: 0;
+    }
+
+    body.kobo-mode .btn {
+      border: 2px solid #000000;
+      border-radius: 0;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    body.kobo-mode .btn-danger {
+      border: 1px dashed #000000;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    body.kobo-mode .upload-zone {
+      display: none; /* Hide upload on Kobo by default to keep screen clean */
+    }
+
+    body.kobo-mode .kobo-toggle {
+      background: #000000 !important;
+      color: #ffffff !important;
+    }
+
+    /* Standard modern web aesthetics */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      transition: var(--transition);
+    }
+
+    header {
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto 2.5rem auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2.7rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 0.9rem;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--card-bg);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-danger {
+      color: var(--danger);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: var(--danger);
+    }
+
+    main {
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Upload zone styling */
+    .upload-zone {
+      border: 2px dashed var(--card-border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      text-align: center;
+      background: var(--card-bg);
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.04);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Grid layout */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .card-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .book-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0; /* allows text truncation */
+    }
+
+    .book-title {
+      font-weight: 500;
+      font-size: 1.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-main);
+    }
+
+    .book-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .card-actions .btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .card-actions .btn-delete {
+      flex: 0 0 auto;
+      padding: 0.6rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+      border: 1px dashed var(--card-border);
+      border-radius: 12px;
+    }
+
+    /* Modal for password settings */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: #111827;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    body.kobo-mode .modal-content {
+      background: #ffffff;
+      border: 3px solid #000000;
+      border-radius: 0;
+    }
+
+    .modal-header {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+    }
+
+    .modal input[type="password"] {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+    }
+
+    body.kobo-mode .modal input[type="password"] {
+      background: #ffffff;
+      border: 2px solid #000000;
+      color: #000000;
+      border-radius: 0;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #10b981;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: var(--transition);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>kobo-mimi</h1>
+    <div class="header-actions">
+      <button class="btn kobo-toggle" onclick="toggleKoboMode()">Mode Liseuse</button>
+      <button class="btn" onclick="openPasswordModal()">⚙️ Code d'accès</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="upload-zone" id="dropzone">
+      <div class="upload-icon">📖</div>
+      <p>Glissez-déposez des fichiers <strong>.epub</strong> ici ou cliquez pour parcourir</p>
+      <input type="file" id="fileInput" accept=".epub" onchange="handleFileSelect(event)">
+    </div>
+
+    <div class="books-grid" id="booksGrid">
+      <!-- Books will be loaded here dynamically -->
+    </div>
+  </main>
+
+  <!-- Modal Code Accès -->
+  <div class="modal" id="passwordModal" onclick="closePasswordModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">Configuration d'accès</div>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Saisissez le code d'administration requis pour téléverser et supprimer des livres.</p>
+      <input type="password" id="adminPasswordInput" placeholder="Entrez le code d'accès">
+      <div class="modal-footer">
+        <button class="btn" onclick="closePasswordModal()">Annuler</button>
+        <button class="btn btn-primary" onclick="savePassword()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let books = [];
+    const dropzone = document.getElementById('dropzone');
+    const booksGrid = document.getElementById('booksGrid');
+    const toast = document.getElementById('toast');
+
+    // Drag and drop event listeners
+    if (dropzone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropzone.classList.remove('dragover');
+        }, false);
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+          uploadFile(files[0]);
+        }
+      });
+    }
+
+    function showToast(message, isError = false) {
+      toast.textContent = message;
+      toast.className = `toast ${isError ? 'error' : ''} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function toggleKoboMode() {
+      document.body.classList.toggle('kobo-mode');
+      const isKobo = document.body.classList.contains('kobo-mode');
+      localStorage.setItem('kobo_mode', isKobo ? 'true' : 'false');
+    }
+
+    // Auto-detect Kobo User Agent
+    if (navigator.userAgent.toLowerCase().includes('kobo') || localStorage.getItem('kobo_mode') === 'true') {
+      document.body.classList.add('kobo-mode');
+    }
+
+    function openPasswordModal() {
+      document.getElementById('passwordModal').style.display = 'flex';
+      document.getElementById('adminPasswordInput').value = localStorage.getItem('kobo_admin_password') || '';
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').style.display = 'none';
+    }
+
+    function savePassword() {
+      const password = document.getElementById('adminPasswordInput').value;
+      localStorage.setItem('kobo_admin_password', password);
+      closePasswordModal();
+      showToast('Code d\'accès enregistré localement');
+      loadBooks();
+    }
+
+    function getPassword() {
+      return localStorage.getItem('kobo_admin_password') || '';
+    }
+
+    async function loadBooks() {
+      booksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Chargement des livres...</div>';
+      try {
+        const response = await fetch('/api/list');
+        if (!response.ok) throw new Error('Impossible de récupérer la liste');
+        books = await response.json();
+        renderBooks();
+      } catch (err) {
+        showToast('Erreur lors du chargement des livres', true);
+        booksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--danger);">Erreur de chargement. Veuillez réessayer.</div>';
+      }
+    }
+
+    function formatBytes(bytes, decimals = 1) {
+      if (!bytes) return '0 Octet';
+      const k = 1024;
+      const dm = decimals < 0 ? 0 : decimals;
+      const sizes = ['Octets', 'Ko', 'Mo', 'Go'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+
+    function renderBooks() {
+      if (books.length === 0) {
+        booksGrid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1/-1;">
+            <p>Aucun e-book disponible dans votre bibliothèque.</p>
+          </div>
+        `;
+        return;
+      }
+
+      booksGrid.innerHTML = books.map(book => {
+        // Clean display name by replacing hyphens/underscores and removing extension
+        const cleanName = book.pathname
+          .replace(/\.[^/.]+$/, "")
+          .replace(/[-_]/g, " ");
+
+        return `
+          <div class="card">
+            <div class="card-info">
+              <div class="book-icon">📘</div>
+              <div class="card-details">
+                <div class="book-title" title="${book.pathname}">${cleanName}</div>
+                <div class="book-meta">${formatBytes(book.size)}</div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <a href="${book.url}" download="${book.pathname}" class="btn btn-primary">Télécharger</a>
+              <button class="btn btn-danger btn-delete" onclick="deleteBook('${book.url}')" title="Supprimer">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleFileSelect(event) {
+      const files = event.target.files;
+      if (files.length > 0) {
+        uploadFile(files[0]);
+      }
+    }
+
+    async function uploadFile(file) {
+      if (!file.name.endsWith('.epub')) {
+        showToast('Veuillez sélectionner un fichier .epub uniquement.', true);
+        return;
+      }
+
+      showToast(`Téléchargement de ${file.name} en cours...`);
+
+      try {
+        const password = getPassword();
+        const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+          method: 'POST',
+          headers: {
+            'x-admin-password': password
+          },
+          body: file
+        });
+
+        if (response.status === 401) {
+          showToast('Code d\'accès incorrect ou non configuré.', true);
+          openPasswordModal();
+          return;
+        }
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Erreur serveur');
+        }
+
+        showToast('Téléversement réussi !');
+        loadBooks();
+      } catch (err) {
+        showToast(`Erreur : ${err.message}`, true);
+      }
+    }
+
+    async function deleteBook(url) {
+      if (!confirm('Voulez-vous vraiment supprimer cet e-book ?')) return;
+
+      try {
+        const password = getPassword();
+        const response = await fetch(`/api/delete?url=${encodeURIComponent(url)}`, {
+          method: 'POST',
+          headers: {
+            'x-admin-password': password
+          }
+        });
+
+        if (response.status === 401) {
+          showToast('Code d\'accès incorrect ou non configuré.', true);
+          openPasswordModal();
+          return;
+        }
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Erreur serveur');
+        }
+
+        showToast('Livre supprimé avec succès !');
+        loadBooks();
+      } catch (err) {
+        showToast(`Erreur : ${err.message}`, true);
+      }
+    }
+
+    // Initial load
+    loadBooks();
+  </script>
+</body>
+</html>
