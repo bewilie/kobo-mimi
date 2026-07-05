@@ -9,22 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-color: #0b0f19;
-      --card-bg: rgba(255, 255, 255, 0.03);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --danger: #ef4444;
-      --danger-hover: #dc2626;
-      --font-serif: 'Instrument Serif', serif;
-      --font-sans: 'Inter', sans-serif;
-      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* Standard modern web aesthetics */
+    /* 
+      Utilisation de valeurs statiques à la place des variables CSS 
+      pour assurer une compatibilité totale avec le navigateur WebKit de la Kobo Clara.
+    */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -32,54 +20,52 @@
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: var(--font-sans);
+      background-color: #0b0f19;
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 2rem 1.5rem;
-      transition: var(--transition);
+      padding: 20px 15px;
     }
 
     header {
       max-width: 1000px;
       width: 100%;
-      margin: 0 auto 2.5rem auto;
+      margin: 0 auto 25px auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 15px;
     }
 
     h1 {
-      font-family: var(--font-serif);
-      font-size: 2.7rem;
+      font-family: 'Instrument Serif', serif;
+      font-size: 2.5rem;
       font-weight: 400;
       letter-spacing: -0.02em;
     }
 
     .header-actions {
       display: flex;
-      gap: 0.75rem;
+      gap: 10px;
       align-items: center;
     }
 
     .btn {
-      padding: 0.6rem 1.2rem;
-      font-family: var(--font-sans);
+      padding: 8px 16px;
+      font-family: 'Inter', sans-serif;
       font-weight: 500;
       font-size: 0.9rem;
-      border: 1px solid var(--card-border);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
       cursor: pointer;
-      background: var(--card-bg);
-      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.03);
+      color: #f3f4f6;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      transition: var(--transition);
+      gap: 8px;
       text-decoration: none;
     }
 
@@ -89,23 +75,23 @@
     }
 
     .btn-primary {
-      background: var(--accent);
+      background: #3b82f6;
       color: white;
       border: none;
     }
 
     .btn-primary:hover {
-      background: var(--accent-hover);
+      background: #2563eb;
     }
 
     .btn-danger {
-      color: var(--danger);
+      color: #ef4444;
       border-color: rgba(239, 68, 68, 0.2);
     }
 
     .btn-danger:hover {
       background: rgba(239, 68, 68, 0.1);
-      border-color: var(--danger);
+      border-color: #ef4444;
     }
 
     main {
@@ -115,24 +101,23 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 20px;
     }
 
-    /* Upload zone styling */
+    /* Upload zone */
     .upload-zone {
       display: none;
-      border: 2px dashed var(--card-border);
+      border: 2px dashed rgba(255, 255, 255, 0.08);
       border-radius: 12px;
-      padding: 2.5rem;
+      padding: 30px;
       text-align: center;
-      background: var(--card-bg);
+      background: rgba(255, 255, 255, 0.03);
       cursor: pointer;
       position: relative;
-      transition: var(--transition);
     }
 
     .upload-zone:hover, .upload-zone.dragover {
-      border-color: var(--accent);
+      border-color: #3b82f6;
       background: rgba(59, 130, 246, 0.04);
     }
 
@@ -148,51 +133,45 @@
 
     .upload-icon {
       font-size: 2rem;
-      margin-bottom: 0.75rem;
-      color: var(--text-muted);
+      margin-bottom: 10px;
+      color: #9ca3af;
     }
 
     /* Grid layout */
     .books-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
-      padding: 1.5rem;
+      padding: 20px;
+      flex: 1 1 280px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 1.5rem;
-      transition: var(--transition);
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.05);
+      gap: 15px;
+      min-width: 250px;
     }
 
     .card-info {
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
+      gap: 12px;
     }
 
     .book-icon {
       font-size: 2rem;
-      line-height: 1;
     }
 
     .card-details {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
-      min-width: 0; /* allows text truncation */
+      gap: 4px;
+      min-width: 0;
     }
 
     .book-title {
@@ -201,17 +180,17 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--text-main);
+      color: #f3f4f6;
     }
 
     .book-meta {
       font-size: 0.8rem;
-      color: var(--text-muted);
+      color: #9ca3af;
     }
 
     .card-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 8px;
     }
 
     .card-actions .btn {
@@ -219,95 +198,36 @@
       justify-content: center;
     }
 
-    .card-actions .btn-delete {
-      flex: 0 0 auto;
-      padding: 0.6rem;
-    }
-
-    /* Empty state */
     .empty-state {
       text-align: center;
-      padding: 4rem 2rem;
-      color: var(--text-muted);
-      border: 1px dashed var(--card-border);
+      padding: 50px 20px;
+      color: #9ca3af;
+      border: 1px dashed rgba(255, 255, 255, 0.08);
       border-radius: 12px;
-    }
-
-    /* Modal for password settings */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-    }
-
-    .modal-content {
-      background: #111827;
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 400px;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-
-
-    .modal-header {
-      font-family: var(--font-serif);
-      font-size: 1.8rem;
-    }
-
-    .modal input[type="password"] {
-      width: 100%;
-      padding: 0.75rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      color: var(--text-main);
-      font-family: var(--font-sans);
-    }
-
-
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.5rem;
     }
 
     /* Toast notification */
     .toast {
       position: fixed;
-      bottom: 2rem;
-      right: 2rem;
+      bottom: 20px;
+      right: 20px;
       background: #10b981;
       color: white;
-      padding: 0.75rem 1.5rem;
+      padding: 12px 24px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transform: translateY(100px);
       opacity: 0;
-      transition: var(--transition);
+      transition: opacity 0.2s ease-in-out;
       z-index: 1000;
+      pointer-events: none;
     }
 
     .toast.show {
-      transform: translateY(0);
       opacity: 1;
     }
 
     .toast.error {
-      background: var(--danger);
+      background: #ef4444;
     }
   </style>
 </head>
@@ -328,55 +248,57 @@
     </div>
 
     <div class="books-grid" id="booksGrid">
-      <!-- Books will be loaded here dynamically -->
+      <div style="text-align: center; padding: 20px; width: 100%;">Chargement des livres...</div>
     </div>
   </main>
-
-
 
   <div class="toast" id="toast"></div>
 
   <script>
-    let books = [];
-    const dropzone = document.getElementById('dropzone');
-    const booksGrid = document.getElementById('booksGrid');
-    const toast = document.getElementById('toast');
+    /*
+      Script réécrit en ES5 (Vanilla JS sans async/await, sans variables let/const, 
+      sans fonctions fléchées, sans template literals et avec XMLHttpRequest) 
+      pour assurer un support à 100% sur le vieux navigateur de la Kobo Clara.
+    */
+    var books = [];
+    var dropzone = document.getElementById('dropzone');
+    var booksGrid = document.getElementById('booksGrid');
+    var toast = document.getElementById('toast');
 
-    // Drag and drop event listeners
+    // Drag and drop events (for desktop)
     if (dropzone) {
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropzone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          dropzone.classList.add('dragover');
-        }, false);
-      });
+      dropzone.addEventListener('dragenter', preventDefault, false);
+      dropzone.addEventListener('dragover', preventDefault, false);
+      dropzone.addEventListener('dragleave', preventDefault, false);
+      dropzone.addEventListener('drop', preventDefault, false);
 
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropzone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          dropzone.classList.remove('dragover');
-        }, false);
-      });
-
-      dropzone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
+      dropzone.addEventListener('dragenter', function() { dropzone.className = 'upload-zone dragover'; }, false);
+      dropzone.addEventListener('dragover', function() { dropzone.className = 'upload-zone dragover'; }, false);
+      dropzone.addEventListener('dragleave', function() { dropzone.className = 'upload-zone'; }, false);
+      dropzone.addEventListener('drop', function(e) {
+        dropzone.className = 'upload-zone';
+        var dt = e.dataTransfer;
+        var files = dt.files;
         if (files.length > 0) {
           uploadFile(files[0]);
         }
-      });
+      }, false);
     }
 
-    function showToast(message, isError = false) {
-      toast.textContent = message;
-      toast.className = `toast ${isError ? 'error' : ''} show`;
-      setTimeout(() => {
-        toast.classList.remove('show');
+    function preventDefault(e) {
+      e.preventDefault();
+    }
+
+    function showToast(message, isError) {
+      toast.innerHTML = message;
+      toast.className = 'toast ' + (isError ? 'error' : '') + ' show';
+      setTimeout(function() {
+        toast.className = 'toast';
       }, 3000);
     }
 
     function toggleUploadZone() {
-      const zone = document.getElementById('dropzone');
+      var zone = document.getElementById('dropzone');
       if (zone.style.display === 'none' || !zone.style.display) {
         zone.style.display = 'block';
       } else {
@@ -384,118 +306,124 @@
       }
     }
 
-
-
-    async function loadBooks() {
-      booksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Chargement des livres...</div>';
-      try {
-        const response = await fetch('/api/list');
-        if (!response.ok) throw new Error('Impossible de récupérer la liste');
-        books = await response.json();
-        renderBooks();
-      } catch (err) {
-        showToast('Erreur lors du chargement des livres', true);
-        booksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--danger);">Erreur de chargement. Veuillez réessayer.</div>';
-      }
+    function loadBooks() {
+      booksGrid.innerHTML = '<div style="text-align: center; padding: 20px; width: 100%;">Chargement des livres...</div>';
+      
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/list', true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              books = JSON.parse(xhr.responseText);
+              renderBooks();
+            } catch (e) {
+              showToast('Erreur de lecture des données', true);
+              booksGrid.innerHTML = '<div style="text-align: center; padding: 20px; width: 100%; color: #ef4444;">Erreur de lecture de la liste.</div>';
+            }
+          } else {
+            showToast('Erreur lors du chargement des livres', true);
+            booksGrid.innerHTML = '<div style="text-align: center; padding: 20px; width: 100%; color: #ef4444;">Erreur de chargement. Veuillez vérifier la base Blob.</div>';
+          }
+        }
+      };
+      xhr.send();
     }
 
-    function formatBytes(bytes, decimals = 1) {
-      if (!bytes) return '0 Octet';
-      const k = 1024;
-      const dm = decimals < 0 ? 0 : decimals;
-      const sizes = ['Octets', 'Ko', 'Mo', 'Go'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    function formatBytes(bytes) {
+      if (!bytes) return '0 Ko';
+      var k = 1024;
+      var sizes = ['Octets', 'Ko', 'Mo', 'Go'];
+      var i = Math.floor(Math.log(bytes) / Math.log(k));
+      if (i < 0) i = 0;
+      return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
     }
 
     function renderBooks() {
       if (books.length === 0) {
-        booksGrid.innerHTML = `
-          <div class="empty-state" style="grid-column: 1/-1;">
-            <p>Aucun e-book disponible dans votre bibliothèque.</p>
-          </div>
-        `;
+        booksGrid.innerHTML = '<div class="empty-state"><p>Aucun e-book disponible dans votre bibliothèque.</p></div>';
         return;
       }
 
-      booksGrid.innerHTML = books.map(book => {
-        // Clean display name by replacing hyphens/underscores and removing extension
-        const cleanName = book.pathname
+      var html = '';
+      for (var i = 0; i < books.length; i++) {
+        var book = books[i];
+        // Nettoie le nom de fichier
+        var cleanName = book.pathname
           .replace(/\.[^/.]+$/, "")
           .replace(/[-_]/g, " ");
 
-        return `
-          <div class="card">
-            <div class="card-info">
-              <div class="book-icon">📘</div>
-              <div class="card-details">
-                <div class="book-title" title="${book.pathname}">${cleanName}</div>
-                <div class="book-meta">${formatBytes(book.size)}</div>
-              </div>
-            </div>
-            <div class="card-actions">
-              <a href="${book.url}" download="${book.pathname}" class="btn btn-primary">Télécharger</a>
-              <button class="btn btn-danger btn-delete" onclick="deleteBook('${book.url}')" title="Supprimer">🗑️</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+        html += '<div class="card">' +
+                  '<div class="card-info">' +
+                    '<span class="book-icon">📘</span>' +
+                    '<div class="card-details">' +
+                      '<div class="book-title">' + cleanName + '</div>' +
+                      '<div class="book-meta">' + formatBytes(book.size) + '</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="card-actions">' +
+                    '<a href="' + book.url + '" download="' + book.pathname + '" class="btn btn-primary">Télécharger</a>' +
+                    '<button class="btn btn-danger" onclick="deleteBook(\'' + book.url + '\')">🗑️</button>' +
+                  '</div>' +
+                '</div>';
+      }
+      booksGrid.innerHTML = html;
     }
 
     function handleFileSelect(event) {
-      const files = event.target.files;
+      var files = event.target.files;
       if (files.length > 0) {
         uploadFile(files[0]);
       }
     }
 
-    async function uploadFile(file) {
-      if (!file.name.endsWith('.epub')) {
+    function uploadFile(file) {
+      if (file.name.indexOf('.epub') === -1) {
         showToast('Veuillez sélectionner un fichier .epub uniquement.', true);
         return;
       }
 
-      showToast(`Téléchargement de ${file.name} en cours...`);
+      showToast('Téléversement de ' + file.name + '...');
 
-      try {
-        const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-          method: 'POST',
-          body: file
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Erreur serveur');
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload?filename=' + encodeURIComponent(file.name), true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            showToast('Téléversement réussi !');
+            loadBooks();
+          } else {
+            var errMsg = 'Erreur serveur';
+            try {
+              var res = JSON.parse(xhr.responseText);
+              errMsg = res.error || errMsg;
+            } catch(e) {}
+            showToast(errMsg, true);
+          }
         }
-
-        showToast('Téléversement réussi !');
-        loadBooks();
-      } catch (err) {
-        showToast(`Erreur : ${err.message}`, true);
-      }
+      };
+      xhr.send(file);
     }
 
-    async function deleteBook(url) {
+    function deleteBook(url) {
       if (!confirm('Voulez-vous vraiment supprimer cet e-book ?')) return;
 
-      try {
-        const response = await fetch(`/api/delete?url=${encodeURIComponent(url)}`, {
-          method: 'POST'
-        });
-
-        if (!response.ok) {
-          const errData = await response.json();
-          throw new Error(errData.error || 'Erreur serveur');
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/delete?url=' + encodeURIComponent(url), true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            showToast('Livre supprimé avec succès.');
+            loadBooks();
+          } else {
+            showToast('Erreur de suppression.', true);
+          }
         }
-
-        showToast('Livre supprimé avec succès !');
-        loadBooks();
-      } catch (err) {
-        showToast(`Erreur : ${err.message}`, true);
-      }
+      };
+      xhr.send();
     }
 
-    // Initial load
+    // Premier chargement
     loadBooks();
   </script>
 </body>
